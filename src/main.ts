@@ -23,19 +23,22 @@ const gallery = {
     ctx.textAlign = "center";
     ctx.fillText("examples", engine.width / 2, 80);
 
-    // list
+    // list — measure each row so the [N] + title pair is truly centered
     ctx.font = "18px monospace";
     EXAMPLES.forEach((ex, i) => {
+      const y = 140 + i * 44;
+      const num = `[${i + 1}]  `;
+      const numW = ctx.measureText(num).width;
+      const totalW = numW + ctx.measureText(ex.title).width;
+      const startX = Math.round(engine.width / 2 - totalW / 2);
+
+      ctx.textAlign = "left";
       ctx.fillStyle = "#888";
-      ctx.textAlign = "right";
-      ctx.fillText(`[${i + 1}]`, engine.width / 2 - 12, 140 + i * 44);
+      ctx.fillText(num, startX, y);
 
       ctx.fillStyle = "#eee";
-      ctx.textAlign = "left";
-      ctx.fillText(ex.title, engine.width / 2, 140 + i * 44);
+      ctx.fillText(ex.title, startX + numW, y);
     });
-
-    ctx.textAlign = "left";
   },
 
   update(_dt: number) {

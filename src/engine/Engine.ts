@@ -141,7 +141,7 @@ export class Engine {
     this.lastTime = timestamp;
 
     this.physics.step(dt);
-    this.camera.update(dt);
+    this.camera.update(dt, this.width, this.height);
     for (const obj of this.objects) obj.update(dt);
 
     this.checkCollisions();
