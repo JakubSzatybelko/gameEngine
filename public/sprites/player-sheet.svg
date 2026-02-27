@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="120">
+  <!-- row 0: idle (4 frames) - eyes open/blink cycle -->
+  <!-- frame 0,0 -->
+  <rect x="0"   y="0" width="60" height="60" rx="8" fill="#0f3460"/>
+  <rect x="10"  y="10" width="16" height="16" rx="3" fill="#e94560"/>
+  <rect x="34"  y="10" width="16" height="16" rx="3" fill="#e94560"/>
+  <rect x="10"  y="36" width="40" height="14" rx="3" fill="#e94560"/>
+  <!-- frame 1,0 -->
+  <rect x="60"  y="0" width="60" height="60" rx="8" fill="#0f3460"/>
+  <rect x="70"  y="10" width="16" height="16" rx="3" fill="#e94560"/>
+  <rect x="94"  y="10" width="16" height="16" rx="3" fill="#e94560"/>
+  <rect x="70"  y="36" width="40" height="14" rx="3" fill="#e94560"/>
+  <!-- frame 2,0 - blink -->
+  <rect x="120" y="0" width="60" height="60" rx="8" fill="#0f3460"/>
+  <rect x="130" y="18" width="16" height="6"  rx="3" fill="#e94560"/>
+  <rect x="154" y="18" width="16" height="6"  rx="3" fill="#e94560"/>
+  <rect x="130" y="36" width="40" height="14" rx="3" fill="#e94560"/>
+  <!-- frame 3,0 -->
+  <rect x="180" y="0" width="60" height="60" rx="8" fill="#0f3460"/>
+  <rect x="190" y="10" width="16" height="16" rx="3" fill="#e94560"/>
+  <rect x="214" y="10" width="16" height="16" rx="3" fill="#e94560"/>
+  <rect x="190" y="36" width="40" height="14" rx="3" fill="#e94560"/>
+
+  <!-- row 1: run (4 frames) - body bobs up/down -->
+  <!-- frame 0,1 -->
+  <rect x="0"   y="64" width="60" height="60" rx="8" fill="#16213e"/>
+  <rect x="10"  y="74" width="16" height="16" rx="3" fill="#53d8fb"/>
+  <rect x="34"  y="74" width="16" height="16" rx="3" fill="#53d8fb"/>
+  <rect x="10"  y="100" width="40" height="14" rx="3" fill="#53d8fb"/>
+  <!-- frame 1,1 -->
+  <rect x="60"  y="68" width="60" height="60" rx="8" fill="#16213e"/>
+  <rect x="70"  y="78" width="16" height="16" rx="3" fill="#53d8fb"/>
+  <rect x="94"  y="78" width="16" height="16" rx="3" fill="#53d8fb"/>
+  <rect x="70"  y="104" width="40" height="14" rx="3" fill="#53d8fb"/>
+  <!-- frame 2,1 -->
+  <rect x="120" y="64" width="60" height="60" rx="8" fill="#16213e"/>
+  <rect x="130" y="74" width="16" height="16" rx="3" fill="#53d8fb"/>
+  <rect x="154" y="74" width="16" height="16" rx="3" fill="#53d8fb"/>
+  <rect x="130" y="100" width="40" height="14" rx="3" fill="#53d8fb"/>
+  <!-- frame 3,1 -->
+  <rect x="180" y="68" width="60" height="60" rx="8" fill="#16213e"/>
+  <rect x="190" y="78" width="16" height="16" rx="3" fill="#53d8fb"/>
+  <rect x="214" y="78" width="16" height="16" rx="3" fill="#53d8fb"/>
+  <rect x="190" y="104" width="40" height="14" rx="3" fill="#53d8fb"/>
+</svg>
