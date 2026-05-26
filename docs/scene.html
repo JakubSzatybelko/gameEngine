@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — Scene</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title"><code>Scene</code></h1>
+    <p class="page-subtitle">
+      Organise your game into discrete states — main menu, gameplay, game over — each
+      as a <code>Scene</code> subclass. Use <code>engine.scenes.load()</code> to switch
+      between them.
+    </p>
+
+    <!-- Scene abstract class -->
+    <h2>Scene <span style="font-weight:400;color:var(--text-dim);font-size:.8rem;">(abstract class)</span></h2>
+    <p>Extend this class to define a scene. When loaded, the engine clears all current
+    game objects before calling <code>onEnter</code>.</p>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Lifecycle</span>Lifecycle Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">onEnter</span>(<span class="sig-param">engine</span>: <span class="sig-type">Engine</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Called once when the scene becomes active. Add your game objects and initialise state here.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">onExit</span>(<span class="sig-param">engine</span>: <span class="sig-type">Engine</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Called once just before the scene is replaced by another. Use for any cleanup needed before <code>clearObjects()</code> runs.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <pre>import { Scene } from "./engine/Scene";
+import { Engine } from "./engine/Engine";
+
+class GameplayScene extends Scene {
+  onEnter(engine: Engine) {
+    engine.assets.image("player", "/sprites/player.png");
+    engine.assets.loadAll().then(() => {
+      engine.add(new Player(engine));
+    });
+  }
+  onExit(engine: Engine) {
+    engine.audio.stopMusic();
+  }
+}</pre>
+
+    <hr>
+
+    <!-- SceneManager -->
+    <h2>SceneManager</h2>
+    <p>Accessed via <code>engine.scenes</code>. Handles loading and switching scenes.</p>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-getter">Getters</span>Getters<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">active</span>: <span class="sig-type">Scene</span> <span class="sig-op">| null</span></code></td>
+            <td class="desc">The currently loaded scene, or <code>null</code> if no scene has been loaded yet.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">load</span>(<span class="sig-param">scene</span>: <span class="sig-type">Scene</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">
+              Transitions to a new scene. Calls <code>onExit</code> on the current scene,
+              calls <code>engine.clearObjects()</code>, then calls <code>onEnter</code> on
+              the incoming scene.
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <pre>// switch to a different scene at any time
+engine.scenes.load(new GameOverScene(score));
+
+// check the active scene
+console.log(engine.scenes.active);</pre>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

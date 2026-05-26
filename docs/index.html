@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — Overview</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title">GameEngine</h1>
+    <p class="page-subtitle">
+      A TypeScript 2D game engine built on the HTML5 Canvas API. Provides a game loop,
+      scene management, keyboard input, camera, physics, animation, asset loading, audio,
+      and sprite rendering — with zero external dependencies.
+    </p>
+
+    <h2>Modules</h2>
+    <div class="cards">
+      <a class="card" href="engine.html">
+        <div class="card-name">Engine</div>
+        <div class="card-desc">Core game loop, object management, and access to all systems.</div>
+      </a>
+      <a class="card" href="interfaces.html">
+        <div class="card-name">Interfaces</div>
+        <div class="card-desc">GameObject, UIElement, and Bounds — the contracts objects must satisfy.</div>
+      </a>
+      <a class="card" href="scene.html">
+        <div class="card-name">Scene</div>
+        <div class="card-desc">Scene lifecycle with onEnter / onExit and scene switching.</div>
+      </a>
+      <a class="card" href="input.html">
+        <div class="card-name">Input</div>
+        <div class="card-desc">Keyboard state per frame: held, just-pressed, just-released.</div>
+      </a>
+      <a class="card" href="camera.html">
+        <div class="card-name">Camera</div>
+        <div class="card-desc">2D world camera with follow target, smooth lerp, and zoom.</div>
+      </a>
+      <a class="card" href="physics.html">
+        <div class="card-name">Physics</div>
+        <div class="card-desc">Rigid body simulation — gravity, forces, impulses, drag, bounce.</div>
+      </a>
+      <a class="card" href="animator.html">
+        <div class="card-name">Animator</div>
+        <div class="card-desc">Spritesheet animation with named clips, fps control, and looping.</div>
+      </a>
+      <a class="card" href="assets.html">
+        <div class="card-name">AssetLoader</div>
+        <div class="card-desc">Preload and retrieve image assets by key.</div>
+      </a>
+      <a class="card" href="audio.html">
+        <div class="card-name">AudioManager</div>
+        <div class="card-desc">Sound effects, looping music, and procedural tones via Web Audio.</div>
+      </a>
+      <a class="card" href="sprite.html">
+        <div class="card-name">Sprite</div>
+        <div class="card-desc">Draw individual spritesheet frames to the canvas.</div>
+      </a>
+    </div>
+
+    <h2>Quick Start</h2>
+    <pre>import { Engine } from "./engine/Engine";
+import { Scene }  from "./engine/Scene";
+
+const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+const engine = new Engine(canvas, 800, 600);
+
+class GameScene extends Scene {
+  onEnter(engine: Engine) {
+    // add game objects, load assets, start music ...
+  }
+  onExit(engine: Engine) {
+    // cleanup
+  }
+}
+
+engine.scenes.load(new GameScene());
+engine.start();</pre>
+
+    <h2>Frame Order</h2>
+    <p>Each frame produced by <code>engine.start()</code> executes in this order:</p>
+    <ol>
+      <li>Physics world stepped</li>
+      <li>Camera updated (lerp toward follow target)</li>
+      <li><code>GameObject.update(dt)</code> called for every object</li>
+      <li>Collision detection — <code>onCollide</code> callbacks fired</li>
+      <li>Canvas cleared</li>
+      <li><code>GameObject.render(ctx)</code> called, sorted by <code>zIndex</code>, inside camera transform</li>
+      <li><code>UIElement.render(ctx)</code> called — no camera transform applied</li>
+      <li>Input state flushed (clears pressed / released sets)</li>
+    </ol>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

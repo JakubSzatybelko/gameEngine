@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — Physics</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title">Physics</h1>
+    <p class="page-subtitle">
+      Simple rigid-body physics. Register <code>PhysicsBody</code> instances with
+      <code>engine.physics</code> (a <code>PhysicsWorld</code>) and they are
+      automatically stepped each frame.
+    </p>
+
+    <!-- Vec2 -->
+    <h2>Vec2 <span style="font-weight:400;color:var(--text-dim);font-size:.8rem;">(interface)</span></h2>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">x</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Horizontal component.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">y</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Vertical component.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- PhysicsBody -->
+    <h2>PhysicsBody</h2>
+    <p>A simulated body with position, velocity, and configurable physical properties. Create one and register it with the world via <code>engine.physics.add()</code>.</p>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">x</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">World-space horizontal position. Set directly to place the body.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">y</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">World-space vertical position.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">vx</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Horizontal velocity in px/s.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">vy</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Vertical velocity in px/s.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">mass</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Mass in game units. Affects how forces are converted to acceleration. Default <code>1</code>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">gravityScale</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc"><code>1</code> = full world gravity, <code>0</code> = weightless, <code>-1</code> = floats upward. Default <code>1</code>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">drag</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Velocity damping per second. <code>0</code> = no drag, <code>0.5</code> = 50% velocity loss per second. Default <code>0</code>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">restitution</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Bounciness coefficient. <code>0</code> = no bounce, <code>1</code> = perfect elastic. Default <code>0</code>.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">applyForce</span>(<span class="sig-param">fx</span>: <span class="sig-type">number</span>, <span class="sig-param">fy</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">
+              Accumulates a continuous force (Newtons). Converted to acceleration via
+              <code>a = F / mass</code>. Cleared at the end of each frame. Call every frame
+              to sustain — good for thrust, wind, springs.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">applyImpulse</span>(<span class="sig-param">ix</span>: <span class="sig-type">number</span>, <span class="sig-param">iy</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">
+              Applies an instantaneous change in velocity (<code>impulse / mass</code>).
+              Call once — good for jumps, explosions, or collisions.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">applyAcceleration</span>(<span class="sig-param">ax</span>: <span class="sig-type">number</span>, <span class="sig-param">ay</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">
+              Directly adds to velocity with no mass division. Good for steering
+              behaviours or raw velocity nudges.
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- PhysicsWorld -->
+    <h2>PhysicsWorld</h2>
+    <p>Accessed via <code>engine.physics</code>. Manages all registered bodies and steps them each frame.</p>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">gravity</span>: <span class="sig-type">Vec2</span></code></td>
+            <td class="desc">Global gravity applied to all bodies. Default <code>{ x: 0, y: 980 }</code> (Earth-like downward, in px/s²). Set to <code>{ x: 0, y: 0 }</code> for space / top-down.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">add</span>(<span class="sig-param">body</span>: <span class="sig-type">PhysicsBody</span>): <span class="sig-type">PhysicsBody</span></code></td>
+            <td class="desc">Registers a body with the world. Returns the body for chaining.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">remove</span>(<span class="sig-param">body</span>: <span class="sig-type">PhysicsBody</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Unregisters a body; it will no longer be stepped.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">step</span>(<span class="sig-param">dt</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Advances all registered bodies by <code>dt</code> seconds. Called automatically by the engine each frame.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <pre>import { PhysicsBody } from "./engine/Physics";
+
+class Ball implements GameObject {
+  body = engine.physics.add(new PhysicsBody());
+
+  constructor() {
+    this.body.x = 400;
+    this.body.y = 100;
+    this.body.restitution = 0.7;
+  }
+
+  update(dt: number) {
+    // read position from body each frame
+    const { x, y } = this.body;
+    // floor bounce
+    if (y > 550) { this.body.y = 550; this.body.vy = -Math.abs(this.body.vy) * this.body.restitution; }
+  }
+
+  render(ctx: CanvasRenderingContext2D) {
+    ctx.beginPath();
+    ctx.arc(this.body.x, this.body.y, 20, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}</pre>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

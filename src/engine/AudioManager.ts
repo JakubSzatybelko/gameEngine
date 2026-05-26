@@ -14,6 +14,7 @@ export class AudioManager {
 
   async load(key: string, url: string): Promise<void> {
     const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed to fetch audio "${key}": ${res.status} ${res.statusText}`);
     const raw = await res.arrayBuffer();
     const buffer = await this.ctx.decodeAudioData(raw);
     this.buffers.set(key, buffer);

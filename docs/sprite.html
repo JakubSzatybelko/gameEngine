@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — Sprite</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title"><code>Sprite</code></h1>
+    <p class="page-subtitle">
+      Draws frames from a spritesheet image onto the canvas. Works with
+      <a href="animator.html">Animator</a> to drive frame selection. Coordinates
+      are pixel-snapped to prevent sub-pixel blurring.
+    </p>
+
+    <!-- SpriteFrame -->
+    <h2>SpriteFrame <span style="font-weight:400;color:var(--text-dim);font-size:.8rem;">(interface)</span></h2>
+    <p>An explicit source rectangle within the spritesheet image, used by <code>drawRect()</code>.</p>
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">sx</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Source X in the spritesheet image (pixels from left).</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">sy</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Source Y in the spritesheet image (pixels from top).</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">sw</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Source width in pixels.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">sh</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Source height in pixels.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Sprite class -->
+    <h2>Sprite</h2>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-ctor">Constructor</span>Constructor<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td>
+              <code class="sig">
+                <span class="sig-kw">new</span> <span class="sig-name">Sprite</span>(<span class="sig-param">img</span>: <span class="sig-type">HTMLImageElement</span>,
+  <span class="sig-param">frameWidth</span><span class="sig-op">?</span>: <span class="sig-type">number</span>,
+  <span class="sig-param">frameHeight</span><span class="sig-op">?</span>: <span class="sig-type">number</span>)
+              </code>
+            </td>
+            <td class="desc">
+              Creates a sprite from a loaded image. <code>frameWidth</code> and
+              <code>frameHeight</code> define the size of a single cell in the
+              spritesheet grid. If omitted, the full image size is used (single-frame sprite).
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">frameWidth</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Width of a single frame cell in pixels.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">frameHeight</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Height of a single frame cell in pixels.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td>
+              <code class="sig"><span class="sig-name">draw</span>(<span class="sig-param">ctx</span>: <span class="sig-type">CanvasRenderingContext2D</span>,
+  <span class="sig-param">x</span>: <span class="sig-type">number</span>, <span class="sig-param">y</span>: <span class="sig-type">number</span>,
+  <span class="sig-param">col</span><span class="sig-op">?</span>: <span class="sig-type">number</span>, <span class="sig-param">row</span><span class="sig-op">?</span>: <span class="sig-type">number</span>,
+  <span class="sig-param">destW</span><span class="sig-op">?</span>: <span class="sig-type">number</span>, <span class="sig-param">destH</span><span class="sig-op">?</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code>
+            </td>
+            <td class="desc">
+              Draws the frame at grid column <code>col</code>, row <code>row</code>
+              (both default <code>0</code>) to screen position (<code>x</code>, <code>y</code>).
+              <code>destW</code> / <code>destH</code> override the drawn size; default to
+              <code>frameWidth</code> / <code>frameHeight</code>.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code class="sig"><span class="sig-name">drawRect</span>(<span class="sig-param">ctx</span>: <span class="sig-type">CanvasRenderingContext2D</span>,
+  <span class="sig-param">frame</span>: <span class="sig-type">SpriteFrame</span>,
+  <span class="sig-param">x</span>: <span class="sig-type">number</span>, <span class="sig-param">y</span>: <span class="sig-type">number</span>,
+  <span class="sig-param">destW</span><span class="sig-op">?</span>: <span class="sig-type">number</span>, <span class="sig-param">destH</span><span class="sig-op">?</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code>
+            </td>
+            <td class="desc">
+              Draws using an explicit <code>SpriteFrame</code> source rectangle instead of
+              a grid position. Use when your spritesheet frames are not uniform in size.
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <pre>import { Sprite }   from "./engine/Sprite";
+import { Animator } from "./engine/Animator";
+
+// create sprite from a 4-column × 2-row spritesheet (48×48 cells)
+const sprite = new Sprite(engine.assets.get("hero"), 48, 48);
+const anim = new Animator()
+  .add("idle", { frames: [{ col:0,row:0 }], fps: 1 })
+  .add("run",  { frames: [{ col:0,row:1 },{ col:1,row:1 },{ col:2,row:1 },{ col:3,row:1 }], fps: 10 });
+
+// in render():
+anim.update(dt);
+const { col, row } = anim.frame;
+sprite.draw(ctx, this.x, this.y, col, row);
+
+// draw scaled up 2×
+sprite.draw(ctx, this.x, this.y, col, row, 96, 96);
+
+// draw with explicit source rect
+sprite.drawRect(ctx, { sx: 0, sy: 0, sw: 48, sh: 48 }, this.x, this.y);</pre>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

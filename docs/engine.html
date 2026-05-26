@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — Engine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title"><code>Engine</code></h1>
+    <p class="page-subtitle">
+      The central class. Owns the canvas, drives the game loop, and exposes every
+      built-in system. Instantiate once and call <code>start()</code> to begin rendering.
+    </p>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-ctor">Constructor</span>Constructor<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td>
+              <code class="sig">
+                <span class="sig-kw">new</span> <span class="sig-name">Engine</span>(<span class="sig-param">canvas</span>: <span class="sig-type">HTMLCanvasElement</span>,
+  <span class="sig-param">width</span>: <span class="sig-type">number</span>,
+  <span class="sig-param">height</span>: <span class="sig-type">number</span>)
+              </code>
+            </td>
+            <td class="desc">
+              Sets the canvas dimensions to <code>width × height</code> and obtains the 2D
+              rendering context. Throws if a 2D context is unavailable.
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">canvas</span>: <span class="sig-type">HTMLCanvasElement</span></code></td>
+            <td class="desc">The canvas element the engine renders into.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">ctx</span>: <span class="sig-type">CanvasRenderingContext2D</span></code></td>
+            <td class="desc">The 2D context. Available for direct drawing when needed.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">width</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Canvas width in pixels.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">height</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Canvas height in pixels.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">input</span>: <span class="sig-type">Input</span></code></td>
+            <td class="desc">Keyboard input system. See <a href="input.html">Input</a>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">scenes</span>: <span class="sig-type">SceneManager</span></code></td>
+            <td class="desc">Scene transition manager. See <a href="scene.html">Scene</a>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">camera</span>: <span class="sig-type">Camera</span></code></td>
+            <td class="desc">World camera. See <a href="camera.html">Camera</a>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">assets</span>: <span class="sig-type">AssetLoader</span></code></td>
+            <td class="desc">Image asset registry. See <a href="assets.html">AssetLoader</a>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">audio</span>: <span class="sig-type">AudioManager</span></code></td>
+            <td class="desc">Sound and music system. See <a href="audio.html">AudioManager</a>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">physics</span>: <span class="sig-type">PhysicsWorld</span></code></td>
+            <td class="desc">Physics simulation world. See <a href="physics.html">Physics</a>.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">start</span>(): <span class="sig-type">void</span></code></td>
+            <td class="desc">Begins the <code>requestAnimationFrame</code> game loop. Call once after scene setup.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">add</span>(<span class="sig-param">obj</span>: <span class="sig-type">GameObject</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Registers a game object. It will receive <code>update(dt)</code> and <code>render(ctx)</code> each frame.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">remove</span>(<span class="sig-param">obj</span>: <span class="sig-type">GameObject</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Unregisters a game object, stopping its update and render calls.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">removeAll</span>(<span class="sig-param">objs</span>: <span class="sig-type">GameObject[]</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Removes every object in the provided array in a single pass. More efficient than calling <code>remove()</code> in a loop — uses a <code>Set</code> internally and only rebuilds the render order once.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">addUI</span>(<span class="sig-param">el</span>: <span class="sig-type">UIElement</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">
+              Adds a HUD/UI overlay. UI renders above game objects and is <em>not</em>
+              affected by the camera transform. See <a href="interfaces.html">UIElement</a>.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">removeUI</span>(<span class="sig-param">el</span>: <span class="sig-type">UIElement</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Removes a previously added UI element.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

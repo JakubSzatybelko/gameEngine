@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — Interfaces</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title">Interfaces</h1>
+    <p class="page-subtitle">
+      Core contracts that objects in the engine must satisfy.
+      Implement these interfaces on your own classes to participate in the game loop,
+      collision system, and UI layer.
+    </p>
+
+    <!-- GameObject -->
+    <h2>GameObject</h2>
+    <p>Implement this interface on any object you want to add to the world via <code>engine.add()</code>.</p>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">zIndex</span><span class="sig-op">?</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Render order. Lower values draw first (behind). Defaults to <code>0</code>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">collidable</span><span class="sig-op">?</span>: <span class="sig-type">boolean</span></code></td>
+            <td class="desc">Set to <code>true</code> to include this object in collision checks. Requires <code>bounds</code> to be set.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">bounds</span><span class="sig-op">?</span>: <span class="sig-type">Bounds</span></code></td>
+            <td class="desc">Axis-aligned bounding rectangle used for collision detection and click hit-testing. See <code>Bounds</code> below.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">update</span>(<span class="sig-param">dt</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Called every frame. <code>dt</code> is the elapsed time in seconds since the last frame.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">render</span>(<span class="sig-param">ctx</span>: <span class="sig-type">CanvasRenderingContext2D</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Called every frame after update. Draw your object here. The canvas transform already has the camera applied.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">onClick</span><span class="sig-op">?</span>(): <span class="sig-type">void</span></code></td>
+            <td class="desc">Optional. Fired when the user clicks inside <code>bounds</code>. The topmost object (highest <code>zIndex</code>) receives the event first; propagation stops at the first hit.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">onCollide</span><span class="sig-op">?</span>(<span class="sig-param">other</span>: <span class="sig-type">GameObject</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Optional. Fired when this object's <code>bounds</code> overlaps another collidable object's <code>bounds</code>.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <pre>class Player implements GameObject {
+  x = 0; y = 0; size = 48;
+  collidable = true;
+
+  get bounds() {
+    return { x: this.x, y: this.y, width: this.size, height: this.size };
+  }
+
+  update(dt: number) { /* move ... */ }
+  render(ctx: CanvasRenderingContext2D) { ctx.fillRect(this.x, this.y, this.size, this.size); }
+  onCollide(other: GameObject) { console.log("hit", other); }
+}</pre>
+
+    <hr>
+
+    <!-- UIElement -->
+    <h2>UIElement</h2>
+    <p>Implement this interface for HUD overlays, menus, or any canvas drawing that should remain fixed to the screen (not affected by the camera).</p>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">update</span><span class="sig-op">?</span>(<span class="sig-param">dt</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Optional. Called every frame before render. Use for animating UI state.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">render</span>(<span class="sig-param">ctx</span>: <span class="sig-type">CanvasRenderingContext2D</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Called every frame. Draw HUD elements here. Coordinates are always in screen space.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Bounds -->
+    <h2>Bounds</h2>
+    <p>An axis-aligned rectangle used by collision detection and click hit-testing.</p>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">x</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Left edge of the rectangle in world space.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">y</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Top edge of the rectangle in world space.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">width</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Width in pixels.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">height</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Height in pixels.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

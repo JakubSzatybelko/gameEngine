@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — Animator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title"><code>Animator</code></h1>
+    <p class="page-subtitle">
+      Spritesheet animation controller. Register named clips, call <code>play()</code>
+      to switch between them, and call <code>update(dt)</code> each frame. Read
+      <code>frame</code> to get the current column/row to pass to <a href="sprite.html">Sprite.draw()</a>.
+    </p>
+
+    <!-- AnimationFrame -->
+    <h2>AnimationFrame <span style="font-weight:400;color:var(--text-dim);font-size:.8rem;">(interface)</span></h2>
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">col</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Zero-based column index in the spritesheet.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">row</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Zero-based row index in the spritesheet.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- AnimationConfig -->
+    <h2>AnimationConfig <span style="font-weight:400;color:var(--text-dim);font-size:.8rem;">(interface)</span></h2>
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">frames</span>: <span class="sig-type">AnimationFrame[]</span></code></td>
+            <td class="desc">Ordered list of spritesheet frames that make up the clip.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">fps</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Frames per second for this clip.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">loop</span><span class="sig-op">?</span>: <span class="sig-type">boolean</span></code></td>
+            <td class="desc">Whether the clip loops. Default <code>true</code>. Set to <code>false</code> for one-shot animations like attacks or deaths.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Animator class -->
+    <h2>Animator</h2>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">done</span>: <span class="sig-type">boolean</span></code></td>
+            <td class="desc">Becomes <code>true</code> when a non-looping animation finishes its last frame. Reset to <code>false</code> when <code>play()</code> is called again.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-getter">Getters</span>Getters<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">frame</span>: <span class="sig-type">AnimationFrame</span></code></td>
+            <td class="desc">The current frame's column and row. Pass these to <code>Sprite.draw()</code>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">name</span>: <span class="sig-type">string</span></code></td>
+            <td class="desc">The name of the currently playing animation clip.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">add</span>(<span class="sig-param">name</span>: <span class="sig-type">string</span>, <span class="sig-param">config</span>: <span class="sig-type">AnimationConfig</span>): <span class="sig-type">this</span></code></td>
+            <td class="desc">Registers a named animation clip. Returns <code>this</code> for chaining.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">play</span>(<span class="sig-param">name</span>: <span class="sig-type">string</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Switches to the named clip from the beginning. No-op if the clip is already playing. Throws if the clip name is not registered.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">update</span>(<span class="sig-param">dt</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Advances the animation timer. Call once per frame inside your <code>GameObject.update()</code>.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <pre>import { Animator } from "./engine/Animator";
+import { Sprite }   from "./engine/Sprite";
+
+const sprite = new Sprite(engine.assets.get("player"), 48, 48);
+const anim = new Animator()
+  .add("idle", { frames: [{ col:0,row:0 },{ col:1,row:0 }], fps: 4 })
+  .add("run",  { frames: [{ col:0,row:1 },{ col:1,row:1 },{ col:2,row:1 },{ col:3,row:1 }], fps: 12 })
+  .add("jump", { frames: [{ col:0,row:2 }], fps: 1, loop: false });
+
+// in update:
+anim.update(dt);
+if (isMoving) anim.play("run");
+else          anim.play("idle");
+
+// in render:
+const { col, row } = anim.frame;
+sprite.draw(ctx, this.x, this.y, col, row);</pre>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

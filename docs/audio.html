@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — AudioManager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title"><code>AudioManager</code></h1>
+    <p class="page-subtitle">
+      Web Audio API wrapper accessed via <code>engine.audio</code>. Supports one-shot
+      sound effects, looping background music, a master volume control, and procedural
+      tone generation — no audio files required for the latter.
+    </p>
+
+    <div class="note">
+      <strong>Browser policy</strong> — browsers block audio until a user gesture. The
+      engine automatically calls <code>resume()</code> on the first keypress. If you
+      trigger audio before any input, call <code>engine.audio.resume()</code> manually
+      inside a click or keydown handler.
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Volume Controls<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">masterVolume</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Get or set the master volume for all audio. Clamped to <code>0 – 1</code>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">musicVolume</span> <span class="sig-op">(set)</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Set the volume of the currently playing music track. Has no effect if no music is playing.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Loading<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-kw">async</span> <span class="sig-name">load</span>(<span class="sig-param">key</span>: <span class="sig-type">string</span>, <span class="sig-param">url</span>: <span class="sig-type">string</span>): <span class="sig-type">Promise&lt;void&gt;</span></code></td>
+            <td class="desc">Fetches and decodes a single audio file, stored under <code>key</code>. Throws on network errors or unsupported formats.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-kw">async</span> <span class="sig-name">loadAll</span>(<span class="sig-param">entries</span>: <span class="sig-type">Record&lt;string, string&gt;</span>): <span class="sig-type">Promise&lt;void&gt;</span></code></td>
+            <td class="desc">Loads multiple audio files in parallel. Pass an object of <code>{ key: url }</code> pairs. Resolves when all files are decoded.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Playback<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">play</span>(<span class="sig-param">key</span>: <span class="sig-type">string</span>, <span class="sig-param">volume</span><span class="sig-op">?</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Plays a one-shot sound effect. Multiple calls overlap. <code>volume</code> defaults to <code>1</code>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">playMusic</span>(<span class="sig-param">key</span>: <span class="sig-type">string</span>, <span class="sig-param">volume</span><span class="sig-op">?</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Starts a looping music track. Stops any currently playing track first. <code>volume</code> defaults to <code>0.5</code>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">stopMusic</span>(): <span class="sig-type">void</span></code></td>
+            <td class="desc">Stops the currently playing music track.</td>
+          </tr>
+          <tr>
+            <td>
+              <code class="sig"><span class="sig-name">tone</span>(<span class="sig-param">freq</span>: <span class="sig-type">number</span>, <span class="sig-param">duration</span>: <span class="sig-type">number</span>,
+  <span class="sig-param">volume</span><span class="sig-op">?</span>: <span class="sig-type">number</span>, <span class="sig-param">type</span><span class="sig-op">?</span>: <span class="sig-type">OscillatorType</span>): <span class="sig-type">void</span></code>
+            </td>
+            <td class="desc">
+              Generates and plays a procedural tone — no audio file needed. <code>freq</code> in Hz,
+              <code>duration</code> in seconds. <code>volume</code> defaults to <code>0.3</code>,
+              <code>type</code> defaults to <code>"square"</code>.
+              <code>OscillatorType</code> values: <code>"sine"</code>, <code>"square"</code>, <code>"sawtooth"</code>, <code>"triangle"</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">resume</span>(): <span class="sig-type">Promise&lt;void&gt;</span></code></td>
+            <td class="desc">Resumes the AudioContext after a browser autoplay block. Called automatically by the engine on first keypress.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <pre>// load audio files
+await engine.audio.loadAll({
+  jump:  "/audio/jump.wav",
+  coin:  "/audio/coin.wav",
+  theme: "/audio/theme.ogg",
+});
+
+// play effects
+engine.audio.play("jump");
+engine.audio.play("coin", 0.6);  // quieter
+
+// background music
+engine.audio.playMusic("theme", 0.4);
+engine.audio.musicVolume = 0.2;  // fade down
+engine.audio.stopMusic();
+
+// procedural beeps (retro style — no file needed)
+engine.audio.tone(440, 0.1);             // A4, square wave
+engine.audio.tone(880, 0.05, 0.5, "sine");  // A5, sine</pre>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

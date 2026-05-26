@@ -5,6 +5,8 @@ import { Camera } from "./Camera";
 import { AssetLoader } from "./AssetLoader";
 import { AudioManager } from "./AudioManager";
 import { PhysicsWorld } from "./Physics";
+import { CollisionSystem } from "./CollisionSystem";
+import { ClickHandler } from "./ClickHandler";
 
 export interface Bounds {
   x: number;
@@ -23,18 +25,6 @@ export interface GameObject {
   onCollide?(other: GameObject): void;
 }
 
-function intersects(a: Bounds, b: Bounds): boolean {
-  return a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y;
-}
-
-function hitTest(bounds: Bounds, x: number, y: number): boolean {
-  return x >= bounds.x && x <= bounds.x + bounds.width &&
-    y >= bounds.y && y <= bounds.y + bounds.height;
-}
-
 export class Engine {
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
@@ -47,6 +37,9 @@ export class Engine {
   readonly assets: AssetLoader = new AssetLoader();
   readonly audio: AudioManager = new AudioManager();
   readonly physics: PhysicsWorld = new PhysicsWorld();
+
+  private readonly collisions = new CollisionSystem();
+  private clickHandler!: ClickHandler;
 
   private objects: GameObject[] = [];
   private renderOrder: GameObject[] = [];
@@ -65,7 +58,7 @@ export class Engine {
     if (!ctx) throw new Error("Failed to get 2D context");
     this.ctx = ctx;
 
-    this.canvas.addEventListener("click", this.handleClick);
+    this.clickHandler = new ClickHandler(canvas, () => this.renderOrder);
 
     // unlock AudioContext on first user gesture
     const resume = () => { void this.audio.resume(); window.removeEventListener("keydown", resume); };
@@ -82,7 +75,13 @@ export class Engine {
     this.rebuildRenderOrder();
   }
 
-  clearObjects(): void {
+  removeAll(objs: GameObject[]): void {
+    const toRemove = new Set(objs);
+    this.objects = this.objects.filter((o) => !toRemove.has(o));
+    this.rebuildRenderOrder();
+  }
+
+  private clearObjects(): void {
     this.objects = [];
     this.renderOrder = [];
     this.collidables = [];
@@ -107,35 +106,6 @@ export class Engine {
     requestAnimationFrame(this.loop);
   }
 
-  private checkCollisions(): void {
-    const objs = this.collidables;
-    for (let i = 0; i < objs.length; i++) {
-      for (let j = i + 1; j < objs.length; j++) {
-        const a = objs[i]!;
-        const b = objs[j]!;
-        if (intersects(a.bounds!, b.bounds!)) {
-          a.onCollide?.(b);
-          b.onCollide?.(a);
-        }
-      }
-    }
-  }
-
-  private handleClick = (e: MouseEvent): void => {
-    const rect = this.canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // iterate topmost first, stop at first hit
-    for (let i = this.renderOrder.length - 1; i >= 0; i--) {
-      const obj = this.renderOrder[i]!;
-      if (obj.bounds && obj.onClick && hitTest(obj.bounds, x, y)) {
-        obj.onClick();
-        break;
-      }
-    }
-  };
-
   private loop = (timestamp: number): void => {
     const dt = (timestamp - this.lastTime) / 1000;
     this.lastTime = timestamp;
@@ -144,7 +114,7 @@ export class Engine {
     this.camera.update(dt, this.width, this.height);
     for (const obj of this.objects) obj.update(dt);
 
-    this.checkCollisions();
+    this.collisions.check(this.collidables);
 
     this.ctx.clearRect(0, 0, this.width, this.height);
 

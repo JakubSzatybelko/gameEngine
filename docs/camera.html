@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — Camera</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title"><code>Camera</code></h1>
+    <p class="page-subtitle">
+      2D world camera accessed via <code>engine.camera</code>. Translates and scales the
+      canvas so game objects are drawn relative to a world position. Supports smooth
+      following with configurable lerp and zoom.
+    </p>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-prop">Properties</span>Properties<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">x</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Current horizontal offset of the camera in world space. Updated automatically when following a target.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">y</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Current vertical offset of the camera in world space.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">zoom</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">Scale multiplier. <code>1</code> = no zoom, <code>2</code> = 2× magnification. Default <code>1</code>.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">lerp</span>: <span class="sig-type">number</span></code></td>
+            <td class="desc">
+              Follow smoothness. <code>1</code> = instant snap, <code>0.1</code> = very smooth lag.
+              Default <code>1</code>. Uses frame-rate-independent exponential decay.
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">follow</span>(<span class="sig-param">fn</span>: <span class="sig-type">() =&gt; { x: number; y: number }</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">
+              Sets a target for the camera to follow. Pass a function that returns the
+              current world position to track. The camera centres the returned position
+              on screen each frame.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">unfollow</span>(): <span class="sig-type">void</span></code></td>
+            <td class="desc">Stops following the current target. Camera position remains where it was.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">update</span>(<span class="sig-param">dt</span>: <span class="sig-type">number</span>, <span class="sig-param">width</span>: <span class="sig-type">number</span>, <span class="sig-param">height</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Advances the lerp toward the follow target. Called automatically by the engine each frame.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">apply</span>(<span class="sig-param">ctx</span>: <span class="sig-type">CanvasRenderingContext2D</span>, <span class="sig-param">width</span>: <span class="sig-type">number</span>, <span class="sig-param">height</span>: <span class="sig-type">number</span>): <span class="sig-type">void</span></code></td>
+            <td class="desc">Applies the camera transform (translate + scale) to the canvas context. Called automatically by the engine inside <code>ctx.save/restore</code>.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <pre>// follow the player with smooth lag
+engine.camera.lerp = 0.08;
+engine.camera.follow(() => ({ x: player.x, y: player.y }));
+
+// zoom in
+engine.camera.zoom = 1.5;
+
+// stop following (e.g. during a cutscene)
+engine.camera.unfollow();</pre>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

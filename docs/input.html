@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — Input</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title"><code>Input</code></h1>
+    <p class="page-subtitle">
+      Keyboard state tracker. Accessed via <code>engine.input</code>. Tracks three
+      distinct states per key each frame: held, just-pressed, and just-released.
+      Uses standard <code>KeyboardEvent.code</code> values.
+    </p>
+
+    <div class="note">
+      <strong>Key codes</strong> — use <code>KeyboardEvent.code</code> strings such as
+      <code>"ArrowLeft"</code>, <code>"KeyW"</code>, <code>"Space"</code>, <code>"Digit1"</code>.
+      These are layout-independent and not affected by Shift or locale.
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">isDown</span>(<span class="sig-param">code</span>: <span class="sig-type">string</span>): <span class="sig-type">boolean</span></code></td>
+            <td class="desc">
+              Returns <code>true</code> every frame the key is held down.
+              Use for continuous actions like movement.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">isPressed</span>(<span class="sig-param">code</span>: <span class="sig-type">string</span>): <span class="sig-type">boolean</span></code></td>
+            <td class="desc">
+              Returns <code>true</code> only on the <em>first</em> frame the key is pressed.
+              Use for one-shot actions like jumping or firing.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">isReleased</span>(<span class="sig-param">code</span>: <span class="sig-type">string</span>): <span class="sig-type">boolean</span></code></td>
+            <td class="desc">
+              Returns <code>true</code> only on the frame the key is released.
+            </td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">flush</span>(): <span class="sig-type">void</span></code></td>
+            <td class="desc">
+              Clears the pressed and released sets. Called automatically by the engine at
+              the end of each frame — you do not need to call this yourself.
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <pre>update(dt: number) {
+  // held — smooth movement
+  if (engine.input.isDown("ArrowRight")) this.x += 200 * dt;
+  if (engine.input.isDown("ArrowLeft"))  this.x -= 200 * dt;
+
+  // just-pressed — single jump
+  if (engine.input.isPressed("Space")) this.jump();
+
+  // just-released — charge release
+  if (engine.input.isReleased("KeyZ")) this.fireCharged();
+}</pre>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameEngine — AssetLoader</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">&#9881; GameEngine</a>
+    <span class="version">v1.0</span>
+  </header>
+  <aside id="sidebar"></aside>
+  <main>
+    <h1 class="page-title"><code>AssetLoader</code></h1>
+    <p class="page-subtitle">
+      Image asset registry accessed via <code>engine.assets</code>. Queue images with
+      <code>image()</code>, wait for them all with <code>loadAll()</code>, then retrieve
+      them by key with <code>get()</code>.
+    </p>
+
+    <div class="accordion">
+      <button class="accordion-header">
+        <span class="tag tag-method">Methods</span>Methods<span class="chevron">&#9660;</span>
+      </button>
+      <div class="accordion-body">
+        <table class="member-table">
+          <tr>
+            <td><code class="sig"><span class="sig-name">image</span>(<span class="sig-param">key</span>: <span class="sig-type">string</span>, <span class="sig-param">url</span>: <span class="sig-type">string</span>): <span class="sig-type">this</span></code></td>
+            <td class="desc">Queues an image to be loaded. Returns <code>this</code> for chaining. Loading begins immediately in the background.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">loadAll</span>(): <span class="sig-type">Promise&lt;void&gt;</span></code></td>
+            <td class="desc">Resolves when all queued images have finished loading. Rejects with an error if any image fails to load.</td>
+          </tr>
+          <tr>
+            <td><code class="sig"><span class="sig-name">get</span>(<span class="sig-param">key</span>: <span class="sig-type">string</span>): <span class="sig-type">HTMLImageElement</span></code></td>
+            <td class="desc">Returns the loaded image by key. Throws if the key is not registered.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <pre>// in Scene.onEnter:
+engine.assets
+  .image("player",    "/sprites/player.png")
+  .image("tileset",   "/sprites/tileset.png")
+  .image("explosion", "/sprites/explosion.png");
+
+await engine.assets.loadAll();
+
+// now safe to use:
+const playerSprite = new Sprite(engine.assets.get("player"), 48, 48);</pre>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>
