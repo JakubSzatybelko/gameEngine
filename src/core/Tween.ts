@@ -59,7 +59,7 @@ export class TweenManager {
     this.entries.push({
       id, target: t, from, to, duration,
       elapsed: 0,
-      easing: options.easing ?? Easing.linear,
+      easing: options.easing ?? Easing.linear as EasingFn,
       onComplete: options.onComplete,
     });
     return id;

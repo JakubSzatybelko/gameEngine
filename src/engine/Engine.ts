@@ -22,10 +22,16 @@ export interface GameObject {
   zIndex?: number;
   collidable?: boolean;
   bounds?: Bounds;
+  tags?: string[];
   update(dt: number): void;
   render(ctx: CanvasRenderingContext2D): void;
   onClick?(): void;
   onCollide?(other: GameObject): void;
+}
+
+/** Returns `true` if `obj` has the given tag. Safe to call when `tags` is undefined. */
+export function hasTag(obj: GameObject, tag: string): boolean {
+  return obj.tags !== undefined && obj.tags.includes(tag);
 }
 
 export class Engine {

@@ -17,9 +17,10 @@ export class Camera {
   update(dt: number, width = 0, height = 0): void {
     if (!this.target) return;
     const t = this.target();
-    // center the target on screen: camera offset = target pos - half canvas
-    const targetX = t.x - width / 2;
-    const targetY = t.y - height / 2;
+    // center the target on screen: camera offset = target pos - half viewport in world units
+    // divide by zoom because camera.x/y are world-space coords, not screen pixels
+    const targetX = t.x - width  / (2 * this.zoom);
+    const targetY = t.y - height / (2 * this.zoom);
     // frame-rate independent lerp
     const alpha = 1 - Math.pow(1 - this.lerp, dt * 60);
     this.x += (targetX - this.x) * alpha;
