@@ -7,6 +7,9 @@ import { AudioManager } from "./AudioManager";
 import { PhysicsWorld } from "./Physics";
 import { CollisionSystem } from "./CollisionSystem";
 import { ClickHandler } from "./ClickHandler";
+import { Mouse } from "./Mouse";
+import { Timer } from "./Timer";
+import { TweenManager } from "../core/Tween";
 
 export interface Bounds {
   x: number;
@@ -37,6 +40,9 @@ export class Engine {
   readonly assets: AssetLoader = new AssetLoader();
   readonly audio: AudioManager = new AudioManager();
   readonly physics: PhysicsWorld = new PhysicsWorld();
+  readonly mouse: Mouse;
+  readonly timer: Timer = new Timer();
+  readonly tween: TweenManager = new TweenManager();
 
   private readonly collisions = new CollisionSystem();
   private clickHandler!: ClickHandler;
@@ -58,7 +64,8 @@ export class Engine {
     if (!ctx) throw new Error("Failed to get 2D context");
     this.ctx = ctx;
 
-    this.clickHandler = new ClickHandler(canvas, () => this.renderOrder);
+    this.mouse = new Mouse(canvas);
+    this.clickHandler = new ClickHandler(canvas, this.mouse, () => this.camera, () => this.renderOrder);
 
     // unlock AudioContext on first user gesture
     const resume = () => { void this.audio.resume(); window.removeEventListener("keydown", resume); };
@@ -81,7 +88,7 @@ export class Engine {
     this.rebuildRenderOrder();
   }
 
-  private clearObjects(): void {
+   clearObjects(): void {
     this.objects = [];
     this.renderOrder = [];
     this.collidables = [];
@@ -110,6 +117,8 @@ export class Engine {
     const dt = (timestamp - this.lastTime) / 1000;
     this.lastTime = timestamp;
 
+    this.timer.update(dt);
+    this.tween.update(dt);
     this.physics.step(dt);
     this.camera.update(dt, this.width, this.height);
     for (const obj of this.objects) obj.update(dt);
@@ -129,6 +138,7 @@ export class Engine {
     }
 
     this.input.flush();
+    this.mouse.flush();
     requestAnimationFrame(this.loop);
   };
 }
