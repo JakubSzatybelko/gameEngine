@@ -14,7 +14,9 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^25.3.1",
+    "jsdom": "^29.1.1",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "vitest": "^4.1.7"
   }
 }
